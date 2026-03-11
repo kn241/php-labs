@@ -2,13 +2,14 @@
 $colors = $colors ?? [];
 $currentColor = $currentColor ?? '#FFFAF0';
 $message = $message ?? '';
+$messageType = $messageType ?? 'success';
 ?>
 
 <h1>Колір фону</h1>
 <p>Оберіть колір фону для кулінарного блогу. Зміна зберігається в сесії.</p>
 
 <?php if ($message !== ''): ?>
-    <div class="alert alert--success"><?= htmlspecialchars($message) ?></div>
+    <div class="alert alert--<?= $messageType === 'error' ? 'error' : 'success' ?>"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
 <form method="POST" action="index.php?route=settings/color" class="form">

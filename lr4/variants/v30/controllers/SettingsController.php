@@ -14,6 +14,7 @@ class SettingsController extends PageController
     public function action_color(): void
     {
         $message = '';
+        $messageType = 'success';
 
         if ($this->request->isPost()) {
             $color = $this->request->post('bg_color', '#FFFAF0');
@@ -23,6 +24,7 @@ class SettingsController extends PageController
                 $message = 'Колір фону збережено!';
             } else {
                 $message = 'Невідомий колір.';
+                $messageType = 'error';
             }
         }
 
@@ -30,12 +32,14 @@ class SettingsController extends PageController
             'colors' => $this->availableColors,
             'currentColor' => $_SESSION['bg_color'] ?? '#FFFAF0',
             'message' => $message,
+            'messageType' => $messageType,
         ], 'Колір фону');
     }
 
     public function action_greeting(): void
     {
         $message = '';
+        $messageType = 'success';
 
         if ($this->request->isPost()) {
             $name = trim($this->request->post('greeting_name', ''));
@@ -43,11 +47,19 @@ class SettingsController extends PageController
 
             if ($name === '') {
                 $message = "Ім'я не може бути порожнім.";
+                $messageType = 'error';
             } elseif (!in_array($gender, ['male', 'female'], true)) {
                 $message = 'Оберіть стать.';
+                $messageType = 'error';
             } else {
-                setcookie('greeting_name', $name, time() + 30 * 24 * 3600, '/');
-                setcookie('greeting_gender', $gender, time() + 30 * 24 * 3600, '/');
+                $cookieOptions = [
+                    'expires' => time() + 30 * 24 * 3600,
+                    'path' => '/',
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ];
+                setcookie('greeting_name', $name, $cookieOptions);
+                setcookie('greeting_gender', $gender, $cookieOptions);
 
                 $_COOKIE['greeting_name'] = $name;
                 $_COOKIE['greeting_gender'] = $gender;
@@ -58,6 +70,7 @@ class SettingsController extends PageController
 
         $this->render('settings/greeting', [
             'message' => $message,
+            'messageType' => $messageType,
             'currentName' => $_COOKIE['greeting_name'] ?? '',
             'currentGender' => $_COOKIE['greeting_gender'] ?? '',
         ], 'Привітання (Cookie)');

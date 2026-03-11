@@ -1,5 +1,6 @@
 <?php
 $message = $message ?? '';
+$messageType = $messageType ?? 'success';
 $currentName = $currentName ?? '';
 $currentGender = $currentGender ?? '';
 ?>
@@ -8,7 +9,7 @@ $currentGender = $currentGender ?? '';
 <p>Введіть ваше ім'я та стать. Привітання зберігається в cookie на 30 днів і відображається на всіх сторінках.</p>
 
 <?php if ($message !== ''): ?>
-    <div class="alert alert--success"><?= htmlspecialchars($message) ?></div>
+    <div class="alert alert--<?= $messageType === 'error' ? 'error' : 'success' ?>"><?= htmlspecialchars($message) ?></div>
 <?php endif; ?>
 
 <?php if ($currentName !== ''): ?>
